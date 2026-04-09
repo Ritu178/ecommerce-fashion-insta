@@ -1,0 +1,154 @@
+/* .order-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-form input,
+.order-form textarea,
+.order-form select {
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.summary {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.place-btn {
+  margin-top: 15px;
+  padding: 12px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.place-btn:hover {
+  background: #333;
+} */
+
+/* MAIN LAYOUT */
+.amazon-checkout {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background: #f3f3f3;
+  min-height: 100vh;
+}
+
+/* FORM (LEFT SIDE) - WIDTH SMALL */
+.checkout-left {
+  width: 420px; /* 👈 yahi width control karega */
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* RIGHT SIDE */
+.checkout-right {
+  width: 320px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  height: fit-content;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* SECTION */
+.amazon-form .section {
+  margin-bottom: 18px;
+}
+
+.amazon-form h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #111;
+}
+
+/* INPUTS */
+.amazon-form input,
+.amazon-form textarea,
+.amazon-form select {
+  width: 100%;
+  margin: 6px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+.amazon-form input:focus,
+.amazon-form textarea:focus,
+.amazon-form select:focus {
+  border-color: #ff9900; /* Amazon orange focus */
+  box-shadow: 0 0 3px rgba(255,153,0,0.5);
+}
+
+/* ROW INPUTS */
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+/* BUTTON (AMAZON STYLE) */
+.amazon-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ffd814;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.amazon-btn:hover {
+  background: #f7ca00;
+}
+
+/* SUMMARY ITEMS */
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .amazon-checkout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .checkout-left,
+  .checkout-right {
+    width: 90%;
+  }
+}

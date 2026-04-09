@@ -1,0 +1,119 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f2f2;
+}
+
+.login-box {
+  width: 900px;
+  height: 550px;
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* LEFT SIDE */
+.left {
+  width: 50%;
+  background: linear-gradient(135deg, #ff5a00, #ff7a00);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+ 
+  height: 100%;
+  overflow: hidden;
+}
+.left::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.2); /* dark overlay */
+}
+
+.left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* RIGHT SIDE */
+.right {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logo {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.logo span {
+  color: #ff5a00;
+}
+
+.right h2 {
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.right input {
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.forgot {
+  color: #ff5a00;
+  cursor: pointer;
+}
+
+.login-btn {
+  background: #ff5a00;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.google-btn {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.signup {
+  font-size: 13px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.signup span {
+  color: #ff5a00;
+  cursor: pointer;
+}

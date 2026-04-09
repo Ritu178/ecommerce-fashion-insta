@@ -1,0 +1,255 @@
+/* HERO */
+.kids-hero {
+  background: url("../assets/kids-banner.png") center/cover no-repeat;
+}
+.kids-hero h1 {
+  font-size: 50px;
+  color: black;
+}
+
+/*  MAIN GRID (5 CARDS IN ONE ROW) */
+.custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.custom-col {
+  width: 19%;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .custom-col {
+    width: 32%;
+  }
+}
+
+@media (max-width: 600px) {
+  .custom-col {
+    width: 48%;
+  }
+}
+
+/* CARD */
+.product-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* IMAGE */
+.product-img {
+  position: relative;
+  height: 260px;
+}
+
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TAG */
+.tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff3f6c;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* INFO */
+.product-info {
+  padding: 10px;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.title {
+  font-size: 14px;
+  color: gray;
+}
+
+.rating {
+  font-size: 13px;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  margin: 5px 0;
+  display: inline-block;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: gray;
+  margin-left: 5px;
+}
+
+.discount {
+  color: orange;
+  margin-left: 5px;
+}
+
+/* BUTTON */
+.cart-btn {
+  width: 100%;
+  background: #ff3f6c;
+  color: white;
+  border: none;
+  padding: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* QTY */
+.qty-box {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.qty-box button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+/* GRID - 5 CARDS IN ROW */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+/* CARD */
+.product-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* IMAGE */
+.product-img {
+  height: 250px;
+  position: relative;
+}
+
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TAG */
+.tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff3f6c;
+  color: #fff;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+/* INFO */
+.product-info {
+  padding: 10px;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.title {
+  font-size: 14px;
+  color: gray;
+}
+
+.rating {
+  font-size: 13px;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  margin: 5px 0;
+  display: inline-block;
+}
+
+/* PRICE */
+.price-box {
+  margin: 5px 0;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: gray;
+  margin-left: 5px;
+}
+
+.discount {
+  color: orange;
+  margin-left: 5px;
+}
+
+/* BUTTON */
+.cart-btn {
+  width: 100%;
+  background: #ffd814;
+  border: none;
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cart-btn:hover {
+  background: #f7ca00;
+}
+
+/* AMAZON STYLE QTY */
+.qty-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffd814;
+  border-radius: 20px;
+  padding: 5px 10px;
+  margin-top: 10px;
+}
+
+.qty-pill button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.qty-pill span {
+  font-weight: bold;
+}
+
+/* HERO */

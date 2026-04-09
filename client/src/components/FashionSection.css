@@ -1,0 +1,125 @@
+.fashion-container {
+  text-align: center;
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+  background-color: #fcfaf8; /* Premium Light Background */
+}
+
+/* Background Decoration */
+.bg-blob-light {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: rgba(90, 45, 26, 0.04);
+  border-radius: 50%;
+  top: -100px;
+  right: -100px;
+  z-index: 0;
+}
+
+/* Base Styles for Animation (Hidden Initially) */
+.section-title, .small-text, .main-heading, .fashion-images img, .fashion-btn {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Triggered State */
+.start-animation .section-title,
+.start-animation .small-text,
+.start-animation .main-heading,
+.start-animation .fashion-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.start-animation .fashion-images img {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered Delays */
+.start-animation .section-title { transition-delay: 0.2s; }
+.start-animation .small-text { transition-delay: 0.4s; }
+.start-animation .main-heading { transition-delay: 0.6s; }
+
+/* Image Grid Stagger */
+.start-animation .fashion-images img:nth-child(1) { transition-delay: 0.8s; }
+.start-animation .fashion-images img:nth-child(2) { transition-delay: 1.0s; }
+.start-animation .fashion-images img:nth-child(3) { transition-delay: 1.2s; }
+.start-animation .fashion-images img:nth-child(4) { transition-delay: 1.4s; }
+.start-animation .fashion-images img:nth-child(5) { transition-delay: 1.6s; }
+.start-animation .fashion-btn { transition-delay: 1.8s; }
+
+/* ===== TITLE & TEXT ===== */
+.section-title {
+  font-size: 50px;
+  font-weight: bold;
+  color: #5a2d1a;
+  margin-bottom: 10px;
+}
+
+.main-heading {
+  font-size: 38px;
+  color: #5a2d1a;
+  margin-bottom: 50px;
+  font-weight: bold;
+}
+
+/* ===== IMAGES WITH FLOATING EFFECT ===== */
+.fashion-images {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+
+.fashion-images img {
+  width: 220px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 20px; /* Thoda zyada curved for modern look */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+
+/* Hover Effect */
+.fashion-images img:hover {
+  transform: scale(1.05) translateY(-10px) !important;
+  box-shadow: 0 20px 40px rgba(90, 45, 26, 0.2);
+  z-index: 10;
+}
+
+/* Floating Animations */
+.float-1 { animation: floating 4s ease-in-out infinite; }
+.float-2 { animation: floating 5s ease-in-out infinite 1s; }
+.float-3 { animation: floating 4.5s ease-in-out infinite 0.5s; }
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+/* ===== PREMIUM BUTTON ===== */
+.fashion-btn {
+  margin-top: 60px;
+  padding: 15px 40px;
+  background-color: #5a2d1a;
+  color: white;
+  border: none;
+  border-radius: 50px; /* Pill shape */
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(90, 45, 26, 0.2);
+  transition: 0.4s ease;
+}
+
+.fashion-btn:hover {
+  background-color: #3d1f12;
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(90, 45, 26, 0.3);
+}

@@ -1,0 +1,138 @@
+/* ICON BUTTON */
+.chat-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #c49a7c;
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  z-index: 9999;
+  transition: 0.3s;
+}
+
+.chat-icon:hover {
+  transform: scale(1.1);
+}
+
+/* CHATBOX */
+.chatbot {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 320px;
+  height: 420px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: popup 0.3s ease;
+  
+  z-index: 10000;
+
+}
+
+/* HEADER */
+.chat-header {
+  background: #c49a7c;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+/* MESSAGES */
+.chatbox {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.user {
+  text-align: right;
+  background: #c49a7c;
+  color: white;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.bot {
+  text-align: left;
+  background: #eee;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 10px;
+}
+
+/* INPUT */
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+}
+
+.chat-input button {
+  padding: 10px;
+  background: #c49a7c;
+  color: white;
+  border: none;
+}
+
+/* ANIMATION */
+@keyframes popup {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+/* PRODUCT CARD */
+.product-card {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.product-card button {
+  margin-top: 5px;
+  padding: 6px 10px;
+  background: #c49a7c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.custom-cursor {
+  pointer-events: none;
+  z-index: 9999;
+}
+/* TYPING */
+.typing {
+  font-style: italic;
+  opacity: 0.7;
+}

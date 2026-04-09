@@ -1,0 +1,138 @@
+/* MAIN NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1f1a17;
+  padding: 10px 20px;
+  color: white;
+}
+
+/* LOGO */
+.logo {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 22px;
+
+  margin-left: 20px;   
+}
+/* CENTER PART (MENU + SEARCH) */
+.nav-middle {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  flex: 1;
+  
+  justify-content: flex-start;  /* 👈 center se left shift */
+}
+
+/* MENU */
+.nav-links {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  margin: 0;
+  color: white;
+}
+
+.nav-links li {
+  cursor: pointer;
+  position: relative;
+}
+
+.nav-links li:hover {
+  color: #ffc107;
+}
+
+/* SEARCH (small kar diya) */
+.nav-center {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+
+  margin-left: 80px;  
+}
+
+.nav-center input {
+  width: 100%;
+  padding: 6px; 
+  border: none;
+  outline: none;
+}
+
+.search-btn {
+  border: none;
+  background: white;
+  padding: 6px;
+  cursor: pointer;
+}
+
+/* RIGHT SIDE */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: white;
+}
+
+.nav-item:hover {
+  color: #ffc107;
+}
+
+.dropdown {
+  position: relative;
+}
+
+/* DROPDOWN */
+.dropdown-menu {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  background: white;
+  color: black;
+  min-width: 150px;
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  z-index: 999;
+}
+
+/* ADD THIS 👇 */
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;   /* 👈 COLUMN FIX */
+}
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background: #eee;
+}
+
+/* ACTIVE */
+.dropdown.active .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
