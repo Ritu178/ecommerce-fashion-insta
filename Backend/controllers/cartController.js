@@ -1,9 +1,5 @@
-
-
 const db = require("../db");
 
-
-// ADD TO CART
 exports.addToCart = (req, res) => {
   const { userId, productId } = req.body;
 
@@ -28,7 +24,6 @@ exports.addToCart = (req, res) => {
   });
 };
 
-//  GET CART
 exports.getCart = (req, res) => {
   const { userId } = req.params;
 
@@ -47,12 +42,10 @@ exports.getCart = (req, res) => {
 
   db.query(sql, [userId], (err, result) => {
     if (err) return res.status(500).send(err);
-
     res.json(result);
   });
 };
 
-//  UPDATE CART
 exports.updateCart = (req, res) => {
   const { userId, productId, type } = req.body;
 
@@ -66,27 +59,25 @@ exports.updateCart = (req, res) => {
     res.send("Updated");
   });
 };
+
 exports.deleteCart = (req, res) => {
   const { userId, productId } = req.params;
 
-  const sql = "DELETE FROM cart WHERE user_id=? AND product_id=?";
-  
-  db.query(sql, [userId, productId], (err) => {
-    if (err) return res.send(err);
-    res.send("Deleted ");
-  });
+  db.query(
+    "DELETE FROM cart WHERE user_id=? AND product_id=?",
+    [userId, productId],
+    (err) => {
+      if (err) return res.send(err);
+      res.send("Deleted ");
+    }
+  );
 };
 
 exports.saveForLater = (req, res) => {
   const { userId, productId } = req.body;
 
-  // remove from cart
-  db.query(
-    "DELETE FROM cart WHERE user_id=? AND product_id=?",
-    [userId, productId]
-  );
+  db.query("DELETE FROM cart WHERE user_id=? AND product_id=?", [userId, productId]);
 
-  // add to saved
   db.query(
     "INSERT INTO saved (user_id, product_id) VALUES (?, ?)",
     [userId, productId],
@@ -100,61 +91,41 @@ exports.saveForLater = (req, res) => {
 exports.checkout = (req, res) => {
   const { userId } = req.body;
 
-  // get cart items
-  db.query(
-    "SELECT * FROM cart WHERE user_id=?",
-    [userId],
-    (err, cartItems) => {
-      if (err) return res.send(err);
+  db.query("SELECT * FROM cart WHERE user_id=?", [userId], (err, cartItems) => {
+    if (err) return res.send(err);
 
-      let total = 0;
-      cartItems.forEach((item) => {
-        total += item.quantity * 100; // dummy price
-      });
+    let total = 0;
+    cartItems.forEach((item) => {
+      total += item.quantity * 100;
+    });
 
-      // create order
-      db.query(
-        "INSERT INTO orders (user_id, total) VALUES (?, ?)",
-        [userId, total],
-        (err, result) => {
-          const orderId = result.insertId;
+    db.query(
+      "INSERT INTO orders (user_id, total) VALUES (?, ?)",
+      [userId, total],
+      (insertErr, result) => {
+        if (insertErr) return res.send(insertErr);
 
-          // insert order items
-          cartItems.forEach((item) => {
-            db.query(
-              "INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)",
-              [orderId, item.product_id, item.quantity]
-            );
-          });
+        const orderId = result.insertId;
 
-          // clear cart
-          db.query("DELETE FROM cart WHERE user_id=?", [userId]);
+        cartItems.forEach((item) => {
+          db.query(
+            "INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)",
+            [orderId, item.product_id, item.quantity]
+          );
+        });
 
-          res.send("Order placed");
-        }
-      );
-    }
-  );
+        db.query("DELETE FROM cart WHERE user_id=?", [userId]);
+        res.send("Order placed");
+      }
+    );
+  });
 };
 
-// ORDER HISTORY
 exports.getOrders = (req, res) => {
   const { userId } = req.params;
 
-  db.query(
-    "SELECT * FROM orders WHERE user_id=?",
-    [userId],
-    (err, result) => {
-      if (err) return res.send(err);
-      res.json(result);
-    }
-  );
+  db.query("SELECT * FROM orders WHERE user_id=?", [userId], (err, result) => {
+    if (err) return res.send(err);
+    res.json(result);
+  });
 };
-
-
-
-
-
-
-
-

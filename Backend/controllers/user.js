@@ -1,13 +1,12 @@
 const jwt = require("jsonwebtoken");
 const db = require("../db");
 
-// SIGNUP
 exports.signup = (req, res) => {
   const { name, email, password } = req.body;
 
   const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
 
-  db.query(sql, [name, email, password], (err, result) => {
+  db.query(sql, [name, email, password], (err) => {
     if (err) {
       console.log(err);
       return res.send("Error in signup ");
@@ -15,9 +14,8 @@ exports.signup = (req, res) => {
 
     res.send("User Registered ");
   });
-}; 
+};
 
-// LOGIN
 exports.login = (req, res) => {
   const { email, password } = req.body;
 
@@ -30,11 +28,9 @@ exports.login = (req, res) => {
     }
 
     if (result.length > 0) {
-      const token = jwt.sign(
-        { user: result[0] },
-        "secretkey",
-        { expiresIn: "1h" }
-      );
+      const token = jwt.sign({ user: result[0] }, "secretkey", {
+        expiresIn: "1h",
+      });
 
       res.json({
         message: "Login Successful ",

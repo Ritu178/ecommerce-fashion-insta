@@ -1,10 +1,9 @@
 const db = require("../db");
 
-// GET ALL ORDERS (ADMIN)
 const getAllOrdersAdmin = (req, res) => {
   db.query("SELECT * FROM orders ORDER BY id DESC", (err, results) => {
     if (err) {
-      console.log("SQL ERROR 👉", err);
+      console.log("SQL ERROR:", err);
       return res.status(500).json({ error: err.message });
     }
 
@@ -12,7 +11,6 @@ const getAllOrdersAdmin = (req, res) => {
   });
 };
 
-//  CREATE ORDER
 const createOrder = (req, res) => {
   const {
     user_id,
@@ -54,7 +52,7 @@ const createOrder = (req, res) => {
     ],
     (err, result) => {
       if (err) {
-        console.log("SQL ERROR 👉", err);
+        console.log("SQL ERROR:", err);
         return res.status(500).json({ success: false, message: err.message });
       }
 
@@ -67,7 +65,6 @@ const createOrder = (req, res) => {
   );
 };
 
-//  EXPORT (VERY IMPORTANT - END ME HOGA)
 module.exports = {
   getAllOrdersAdmin,
   createOrder,
