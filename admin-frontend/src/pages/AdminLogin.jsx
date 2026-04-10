@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Login.css";
+import { buildApiUrl } from "../config/api";
+import adminApi from "../config/axios";
 import loginImg from "../assest/login.png"; // ⚠️ assest → assets
 
 export default function AdminLogin() {
@@ -14,15 +16,10 @@ export default function AdminLogin() {
   }, []);
 
   const handleLogin = async () => {
-    const res = await fetch("http://localhost:5000/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
+    const { data } = await adminApi.post(buildApiUrl("/admin/login"), {
+      email,
+      password,
     });
-
-    const data = await res.json();
 
     if (data.success) {
       localStorage.setItem("adminToken", data.token);

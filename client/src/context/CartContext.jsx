@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../config/axios";
 
 export const CartContext = createContext();
 
@@ -17,9 +17,7 @@ const CartProvider = ({ children }) => {
     if (!userId) return;
 
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/cart/${userId}`
-      );
+      const res = await apiClient.get(`/api/cart/${userId}`);
 
       setCart(res.data || []);
     } catch (err) {
@@ -37,7 +35,7 @@ const CartProvider = ({ children }) => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/cart/add", {
+      await apiClient.post("/api/cart/add", {
         userId,
         productId: product.id,
       });
@@ -67,9 +65,7 @@ const CartProvider = ({ children }) => {
   const userId = getUserId();
 
   try {
-    await axios.delete(
-      `http://localhost:5000/api/cart/delete/${userId}/${productId}`
-    );
+    await apiClient.delete(`/api/cart/delete/${userId}/${productId}`);
 
     fetchCart();
   } catch (err) {
@@ -82,7 +78,7 @@ const CartProvider = ({ children }) => {
     const userId = getUserId();
 
     try {
-      await axios.put("http://localhost:5000/api/cart/update", {
+      await apiClient.put("/api/cart/update", {
         userId,
         productId,
         type: "inc",
@@ -99,7 +95,7 @@ const CartProvider = ({ children }) => {
     const userId = getUserId();
 
     try {
-      await axios.put("http://localhost:5000/api/cart/update", {
+      await apiClient.put("/api/cart/update", {
         userId,
         productId,
         type: "dec",
@@ -116,7 +112,7 @@ const CartProvider = ({ children }) => {
     const userId = getUserId();
 
     try {
-      await axios.post("http://localhost:5000/api/cart/save", {
+      await apiClient.post("/api/cart/save", {
         userId,
         productId,
       });
@@ -132,7 +128,7 @@ const CartProvider = ({ children }) => {
     const userId = getUserId();
 
     try {
-      await axios.post("http://localhost:5000/api/cart/checkout", {
+      await apiClient.post("/api/cart/checkout", {
         userId,
       });
 
@@ -141,6 +137,10 @@ const CartProvider = ({ children }) => {
     } catch (err) {
       console.log("Checkout Error:", err);
     }
+  };
+
+  const clearCart = () => {
+    setCart([]);
   };
 
   // ✅ LOAD CART
@@ -158,6 +158,7 @@ const CartProvider = ({ children }) => {
         decrement,
         saveItem,
         checkout,
+        clearCart,
       }}
     >
       {children}

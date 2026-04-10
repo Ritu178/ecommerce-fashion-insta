@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import "./Chatbot.css";
-import axios from "axios";
 import sound from "../assets/notification.mp3.wav";
 import { FaComments, FaTimes } from "react-icons/fa";
+import apiClient from "../config/axios";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
@@ -20,7 +20,7 @@ const Chatbot = () => {
     setTyping(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
+      const res = await apiClient.post("/api/chat", {
         message: input,
       });
 

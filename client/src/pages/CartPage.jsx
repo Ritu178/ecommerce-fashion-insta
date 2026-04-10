@@ -352,52 +352,61 @@ const CartPage = () => {
             <h2>Shopping Cart</h2>
 
             {mergedCart.map((item) => (
-          <div className="cart-item fade-in" key={item.product_id}>
+              <div className="cart-item fade-in" key={item.product_id}>
+                <div className="cart-item-main">
+                  <div className="image-box">
+                    <img src={item.img} alt={item.title} />
 
-            <div className="image-box">
-              <img src={item.img} alt={item.title} />
+                    {discount > 0 && (
+                      <span className="discount-badge">
+                        -{Math.round((discount / totalPrice) * 100)}%
+                      </span>
+                    )}
+                  </div>
 
-              {discount > 0 && (
-                <span className="discount-badge">
-                  -{Math.round((discount / totalPrice) * 100)}%
-                </span>
-              )}
-            </div>
+                  <div className="item-details">
+                    <div className="item-copy">
+                      <h4>{item.title}</h4>
+                      <p className="stock">In stock and ready to ship</p>
+                    </div>
 
-            <div className="item-details">
-              <h4>{item.title}</h4>
-              <p className="stock">In stock</p>
+                    <div className="item-controls">
+                      <div className="qty-box">
+                        <button onClick={() => decrement(item.product_id)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => increment(item.product_id)}>+</button>
+                      </div>
 
-              <div className="qty-box">
-                <button onClick={() => decrement(item.product_id)}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => increment(item.product_id)}>+</button>
+                      <div className="actions">
+                        <button
+                          className="delete-btn"
+                          onClick={() => removeItem(item.product_id)}
+                          aria-label={`Remove ${item.title} from cart`}
+                        >
+                          <FaTrash />
+                        </button>
+
+                        <button
+                          className={`wishlist-btn ${
+                            wishlist.includes(item.product_id) ? "active" : ""
+                          }`}
+                          onClick={() => toggleWishlist(item.product_id)}
+                          aria-label={`Save ${item.title} for later`}
+                        >
+                          <FaHeart />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="item-summary">
+                  <span className="item-unit-price">Rs. {item.price} each</span>
+                  <div className="item-price">
+                    Rs. {(Number(item.price) * Number(item.quantity)).toFixed(2)}
+                  </div>
+                </div>
               </div>
-
-              <div className="actions">
-                <button
-                  className="delete-btn"
-                  onClick={() => removeItem(item.product_id)}
-                >
-                  <FaTrash />
-                </button>
-
-                <button
-                  className={`wishlist-btn ${wishlist.includes(item.product_id)
-                      ? "active"
-                      : ""
-                    }`}
-                  onClick={() =>
-                    toggleWishlist(item.product_id)
-                  }
-                >
-                  <FaHeart />
-                </button>
-              </div>
-            </div>
-
-            <div className="item-price">Rs. {item.price}</div>
-          </div>
             ))}
           </>
         )}

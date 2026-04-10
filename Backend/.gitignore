@@ -3,6 +3,7 @@ build/
 dist/
 .env
 .env.*
+config/.env
 /node_modules
 /package-lock.json
 /uploads

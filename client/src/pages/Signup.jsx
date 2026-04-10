@@ -109,10 +109,10 @@
 
 import React, { useState } from "react";
 import "./Signup.css";
-import axios from "axios";
 import videoBg from "../assets/video.mp4.mp4";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../config/axios";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -133,7 +133,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/signup", {
+      const res = await apiClient.post("/api/signup", {
         name,
         email,
         password,

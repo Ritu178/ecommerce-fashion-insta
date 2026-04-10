@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "./Edit.css";
+import { buildApiUrl, buildAssetUrl } from "../config/api";
+import adminApi from "../config/axios";
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,14 +16,12 @@ const [form, setForm] = useState({});
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const token = localStorage.getItem("adminToken");
-
   useEffect(() => {
-    fetch(`http://localhost:5000/products/${id}`)
+    fetch(buildApiUrl(`/products/${id}`))
       .then(res => res.json())
       .then(data => {
         setForm(data);
-        setPreview(`http://localhost:5000/uploads/${data.image}`);
+        setPreview(buildAssetUrl(`/uploads/${data.image}`));
       });
   }, [id]);
 
@@ -162,16 +162,7 @@ const [form, setForm] = useState({});
       formData.append("image", form.image);
     }
 
-    const res = await fetch(`http://localhost:5000/admin/update-product/${id}`, {
-      method: "PUT",
-      headers: { Authorization: token },
-      body: formData
-    });
-
-    if (!res.ok) {
-      const errData = await res.text();
-      throw new Error(errData || 'Update failed');
-    }
+    await adminApi.put(buildApiUrl(`/admin/update-product/${id}`), formData);
 
     setSuccess('Product updated successfully');
 

@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
+
 const SECRET = "mysecretkey";
 
-const verifyToken = (req, res, next) => {
+const verifyUserToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -26,4 +27,4 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-module.exports = verifyToken;
+module.exports = verifyUserToken;

@@ -14,6 +14,7 @@ const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const ordersRoutes = require("./routes/ordersRoutes");
 const { getAllOrdersAdmin } = require("./controllers/ordersController");
+const verifyUserToken = require("./middleware/userAuth");
 const app = express();
 const SECRET = "mysecretkey";
 
@@ -63,6 +64,64 @@ app.post("/api/login", (req, res) => {
   );
 });
 
+app.get("/api/me", verifyUserToken, (req, res) => {
+  db.query(
+    "SELECT id AS _id, name, email FROM users WHERE id=?",
+    [req.user.id],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+
+      if (result.length === 0) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      res.json({ success: true, user: result[0] });
+    }
+  );
+});
+
+app.put("/api/change-password", verifyUserToken, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Current password and new password are required",
+    });
+  }
+
+  db.query(
+    "SELECT id, password FROM users WHERE id=?",
+    [req.user.id],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+
+      if (result.length === 0) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      const user = result[0];
+
+      if (user.password !== currentPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Current password is incorrect",
+        });
+      }
+
+      db.query(
+        "UPDATE users SET password=? WHERE id=?",
+        [newPassword, req.user.id],
+        (updateErr) => {
+          if (updateErr) return res.status(500).send(updateErr);
+
+          res.json({ success: true, message: "Password updated successfully" });
+        }
+      );
+    }
+  );
+});
+
 // ADMIN LOGIN
 app.post("/admin/login", (req, res) => {
   const { email, password } = req.body;
@@ -107,6 +166,16 @@ const verifyToken = (req, res, next) => {
     next();
   });
 };
+app.get("/admin/users", verifyToken, (req, res) => {
+  db.query(
+    "SELECT id, name, email FROM users ORDER BY id DESC",
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+
+      res.json(Array.isArray(result) ? result : []);
+    }
+  );
+});
 app.post("/api/signup", (req, res) => {
   const { name, email, password } = req.body;
 
@@ -415,6 +484,6 @@ app.get("/", (req, res) => {
 });
 
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+app.listen(5000, () => {
+  console.log(`Server running on port 5000`);
 });

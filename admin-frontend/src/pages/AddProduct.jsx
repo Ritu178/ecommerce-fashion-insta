@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../config/api";
+import adminApi from "../config/axios";
 
 export default function AddProduct() {
   const [form, setForm] = useState({});
@@ -8,8 +10,6 @@ export default function AddProduct() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
-
-  const token = localStorage.getItem("adminToken");
 
   const validate = () => {
     if (!form.title?.trim()) return 'Title is required';
@@ -37,16 +37,7 @@ export default function AddProduct() {
       formData.append("description", form.description);
       formData.append("image", form.image);
 
-      const res = await fetch("http://localhost:5000/admin/add-product", {
-        method: "POST",
-        headers: { Authorization: token },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errData = await res.text();
-        throw new Error(errData || 'Failed to add product');
-      }
+      await adminApi.post(buildApiUrl("/admin/add-product"), formData);
 
       setSuccess('Product added successfully ✅');
       setTimeout(() => {

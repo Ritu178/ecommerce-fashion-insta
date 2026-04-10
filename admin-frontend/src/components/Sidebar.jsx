@@ -1,18 +1,38 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 export default function Sidebar() {
   return (
-    <div style={{ width: "250px", height: "100vh", background: "#1e293b", color: "white" }}>
-      <h4 className="p-3">Admin Panel</h4>
+    <aside className="sidebar-shell">
+      <div className="sidebar-brand">
+        <div className="brand-mark">F</div>
+        <div>
+          <p className="brand-kicker">Admin Console</p>
+          <h4>FASHIONISTA</h4>
+        </div>
+      </div>
 
-      <ul className="list-unstyled p-3">
-        <li><Link to="/admin" className="text-white">Dashboard</Link></li>
-        <li><Link to="/products" className="text-white">Products</Link></li>
-        {/* <li><Link to="/add-product" className="text-white">Add Product</Link></li> */}
-        <li><Link to="/users" className="text-white">Users</Link></li>
-        <li><Link to="/admin/orders" className="text-white"> Orders</Link></li>
-        <li><Link to="/my-orders" className="text-white">My Orders</Link></li>
-      </ul>
-    </div>
+      <nav className="sidebar-nav">
+        <NavLink to="/admin" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          Dashboard
+        </NavLink>
+        <NavLink to="/products" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          Products
+        </NavLink>
+        <NavLink to="/users" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          Users
+        </NavLink>
+        <NavLink to="/admin/orders" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          Orders
+        </NavLink>
+        {/* <NavLink to="/my-orders" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          My Orders
+        </NavLink> */}
+      </nav>
+
+      <div className="sidebar-footer">
+        <span>Store operations</span>
+        <p>Manage products, customers, and order flow from one workspace.</p>
+      </div>
+    </aside>
   );
 }

@@ -266,7 +266,10 @@ export default function App() {
           element={
             <ProtectedRoute>
               <AdminLayout>
-                <AdminOrders />
+                <AdminOrders
+                  pageTitle="Orders"
+                  pageSubtitle="Review all customer orders, update status, and manage fulfillment."
+                />
               </AdminLayout>
             </ProtectedRoute>
           }
@@ -278,7 +281,10 @@ export default function App() {
           element={
             <ProtectedRoute>
               <AdminLayout>
-                <Orders />
+                <Orders
+                  pageTitle="My Orders"
+                  pageSubtitle="View the same order list from the admin workspace."
+                />
               </AdminLayout>
             </ProtectedRoute>
           }

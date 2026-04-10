@@ -67,13 +67,16 @@ import CartPage from "./pages/CartPage";
 import MenPage from "./pages/MenPage";
 import KidsProducts from "./pages/KidsProducts";
 import PlaceOrder from "./pages/PlaceOrder";
+import AccountPage from "./pages/AccountPage";
 
 import CartProvider from "./context/CartContext";
 
 const AppContent = () => {
   const [products, setProducts] = useState([]);
   const location = useLocation();
-  const hideFooterSections = ["/login", "/signup"].includes(location.pathname);
+  const hideFooterSections = ["/login", "/signup", "/cart", "/place-order", "/account"].includes(
+    location.pathname
+  );
 
   useEffect(() => {
     setProducts([
@@ -283,6 +286,38 @@ const AppContent = () => {
             element={
               <PrivateRoute>
                 <PlaceOrder />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <PrivateRoute>
+                <AccountPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account/profile"
+            element={
+              <PrivateRoute>
+                <AccountPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account/orders"
+            element={
+              <PrivateRoute>
+                <AccountPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account/change-password"
+            element={
+              <PrivateRoute>
+                <AccountPage />
               </PrivateRoute>
             }
           />

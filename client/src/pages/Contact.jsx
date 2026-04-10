@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./Contact.css";
-import axios from "axios";
 import Swal from "sweetalert2";
 import contactImg from "../assets/contact-img.png";
 import { FiArrowRight, FiClock, FiMail, FiMapPin, FiMinus, FiPhoneCall, FiPlus } from "react-icons/fi";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import apiClient from "../config/axios";
 
 const contactCards = [
   {
@@ -64,7 +64,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/contact", form);
+      const res = await apiClient.post("/api/contact", form);
 
       if (res.data.success) {
         Swal.fire({

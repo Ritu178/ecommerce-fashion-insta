@@ -1,5 +1,7 @@
 const mysql = require("mysql2");
-require("dotenv").config({ path: "./config/.env" });
+const { assertDatabaseEnv } = require("./config/loadEnv");
+
+assertDatabaseEnv();
 
 const baseConfig = {
   host: process.env.DB_HOST,

@@ -218,17 +218,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "./AdminProducts.css";
+import { buildApiUrl, buildAssetUrl } from "../config/api";
+import adminApi from "../config/axios";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("adminToken");
-
   const fetchProducts = () => {
-    fetch("http://localhost:5000/products")
-      .then(res => res.json())
-      .then(data => setProducts(data));
+    adminApi.get(buildApiUrl("/products"))
+      .then((res) => setProducts(res.data));
   };
 
   useEffect(() => {
@@ -246,12 +245,7 @@ export default function AdminProducts() {
 
     if (!result.isConfirmed) return;
 
-    await fetch(`http://localhost:5000/admin/delete-product/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await adminApi.delete(buildApiUrl(`/admin/delete-product/${id}`));
 
     Swal.fire("Deleted!", "", "success");
 
@@ -283,7 +277,7 @@ export default function AdminProducts() {
             <div key={p.id} className="product-card">
 
               <img
-                src={`http://localhost:5000/uploads/${p.image}`}
+                src={buildAssetUrl(`/uploads/${p.image}`)}
                 alt={p.title}
               />
 

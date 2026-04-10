@@ -92,10 +92,19 @@ import { CartContext } from "../context/CartContext";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef(null);
+  const accountRef = useRef(null);
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const storedUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+      return {};
+    }
+  })();
 
   const { cart } = useContext(CartContext);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -104,6 +113,10 @@ const Navbar = () => {
     const handleOutsideClick = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
+      }
+
+      if (accountRef.current && !accountRef.current.contains(event.target)) {
+        setShowAccountMenu(false);
       }
     };
 
@@ -117,6 +130,14 @@ const Navbar = () => {
     if (!search.trim()) return;
 
     navigate(`/search?query=${encodeURIComponent(search)}`);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userId");
+    setShowAccountMenu(false);
+    navigate("/login");
   };
 
   return (
@@ -212,11 +233,41 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <button className="nav-item cart" onClick={() => navigate("/cart")}>
-              <FaShoppingCart />
-              <span>Cart</span>
-              <span className="cart-count">{totalItems}</span>
-            </button>
+            <>
+              <div ref={accountRef} className={`account-dropdown ${showAccountMenu ? "active" : ""}`}>
+                <button
+                  className="nav-item account-btn"
+                  onClick={() => setShowAccountMenu((prev) => !prev)}
+                >
+                  <FaUser />
+                  <span>{storedUser?.name || "My Account"}</span>
+                  <FaChevronDown className="dropdown-icon" />
+                </button>
+
+                {showAccountMenu && (
+                  <div className="account-menu">
+                    <button onClick={() => { navigate("/account/profile"); setShowAccountMenu(false); }}>
+                      My Profile
+                    </button>
+                    <button onClick={() => { navigate("/account/orders"); setShowAccountMenu(false); }}>
+                      My Orders
+                    </button>
+                    <button onClick={() => { navigate("/account/change-password"); setShowAccountMenu(false); }}>
+                      Change Password
+                    </button>
+                    <button onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button className="nav-item cart" onClick={() => navigate("/cart")}>
+                <FaShoppingCart />
+                <span>Cart</span>
+                <span className="cart-count">{totalItems}</span>
+              </button>
+            </>
           )}
         </div>
       </div>

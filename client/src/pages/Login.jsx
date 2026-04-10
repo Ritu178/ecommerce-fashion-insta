@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Login.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import videoBg from "../assets/video.2.mp4";
 import Swal from "sweetalert2";
+import apiClient from "../config/axios";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +54,7 @@ const Login = () => {
 // };
 const handleLogin = async () => {
   try {
-    const res = await axios.post("http://localhost:5000/api/login", {
+    const res = await apiClient.post("/api/login", {
       email,
       password,
     });

@@ -1,6 +1,55 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const db = require("../db");
+
+const parseProducts = (products) => {
+  if (Array.isArray(products)) return products;
+
+  if (typeof products === "string" && products.trim()) {
+    try {
+      const parsed = JSON.parse(products);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+};
+
+const writeOrderItems = (orderId, products) => {
+  const items = parseProducts(products);
+
+  if (items.length === 0) {
+    return Promise.resolve();
+  }
+
+  return Promise.all(
+    items.map((item) => {
+      const productId = item.product_id ?? item.id;
+      const quantity = Number(item.quantity || 1);
+
+      if (!productId) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve, reject) => {
+        db.query(
+          "INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)",
+          [orderId, productId, quantity],
+          (err) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+
+            resolve();
+          }
+        );
+      });
+    })
+  );
+};
 
 // CREATE ORDER
 router.post("/", (req, res) => {
@@ -20,7 +69,7 @@ router.post("/", (req, res) => {
   } = req.body;
 
   const query = `
-    INSERT INTO orders 
+    INSERT INTO orders
     (user_id, name, email, phone, address, city, state, pincode, payment, notes, products, total, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
@@ -38,17 +87,38 @@ router.post("/", (req, res) => {
       pincode,
       payment,
       notes,
-      JSON.stringify(products), 
-      total_price,             
+      JSON.stringify(products),
+      total_price,
       "Pending",
     ],
     (err, result) => {
       if (err) {
-        console.log("DB ERROR 👉", err);
-        return res.json({ success: false, message: "DB Error" });
+        console.log("DB ERROR =>", err);
+        return res.status(500).json({ success: false, message: "DB Error" });
       }
 
-      res.json({ success: true, message: "Order placed" });
+      db.query("DELETE FROM cart WHERE user_id=?", [user_id], (cartErr) => {
+        if (cartErr) {
+          console.log("CART CLEAR ERROR =>", cartErr);
+        }
+
+        writeOrderItems(result.insertId, products)
+          .then(() => {
+            res.json({
+              success: true,
+              message: "Order placed",
+              order_id: result.insertId,
+            });
+          })
+          .catch((itemsErr) => {
+            console.log("ORDER ITEMS ERROR =>", itemsErr);
+            res.json({
+              success: true,
+              message: "Order placed",
+              order_id: result.insertId,
+            });
+          });
+      });
     }
   );
 });
@@ -65,25 +135,42 @@ router.get("/", (req, res) => {
   });
 });
 
-//  UPDATE ORDER STATUS
-router.put("/:id", (req, res) => {
-  const { status } = req.body;
-
+// GET ORDERS FOR LOGGED-IN USER
+router.get("/user/:userId", (req, res) => {
   db.query(
-    "UPDATE orders SET status=? WHERE id=?",
-    [status, req.params.id],
-    (err) => {
+    "SELECT * FROM orders WHERE user_id=? ORDER BY id DESC",
+    [req.params.userId],
+    (err, result) => {
       if (err) {
         console.log(err);
-        return res.json({ success: false });
+        return res.status(500).json([]);
       }
 
-      res.json({ success: true });
+      const orders = (Array.isArray(result) ? result : []).map((order) => ({
+        ...order,
+        products: parseProducts(order.products),
+      }));
+
+      res.json(orders);
     }
   );
 });
 
-//  DELETE ORDER
+// UPDATE ORDER STATUS
+router.put("/:id", (req, res) => {
+  const { status } = req.body;
+
+  db.query("UPDATE orders SET status=? WHERE id=?", [status, req.params.id], (err) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    }
+
+    res.json({ success: true });
+  });
+});
+
+// DELETE ORDER
 router.delete("/:id", (req, res) => {
   db.query("DELETE FROM orders WHERE id=?", [req.params.id], (err) => {
     if (err) {
