@@ -66,13 +66,26 @@ router.post("/", (req, res) => {
     notes,
     products,
     total_price,
+    razorpay_qr_code_id,
+    razorpay_payment_id,
+    razorpay_payment_status,
+    razorpay_payment_method,
+    razorpay_payment_amount,
   } = req.body;
 
   const query = `
     INSERT INTO orders
-    (user_id, name, email, phone, address, city, state, pincode, payment, notes, products, total, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (user_id, name, email, phone, address, city, state, pincode, payment, payment_meta, payment_provider, razorpay_qr_code_id, razorpay_payment_id, razorpay_payment_status, razorpay_payment_method, razorpay_payment_amount, notes, products, total, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
+
+  const paymentMeta = {
+    razorpay_qr_code_id: razorpay_qr_code_id || null,
+    razorpay_payment_id: razorpay_payment_id || null,
+    razorpay_payment_status: razorpay_payment_status || null,
+    razorpay_payment_method: razorpay_payment_method || null,
+    razorpay_payment_amount: razorpay_payment_amount ?? null,
+  };
 
   db.query(
     query,
@@ -86,6 +99,13 @@ router.post("/", (req, res) => {
       state,
       pincode,
       payment,
+      JSON.stringify(paymentMeta),
+      payment === "Online" ? "razorpay" : "cod",
+      razorpay_qr_code_id || null,
+      razorpay_payment_id || null,
+      razorpay_payment_status || null,
+      razorpay_payment_method || null,
+      razorpay_payment_amount ?? null,
       notes,
       JSON.stringify(products),
       total_price,

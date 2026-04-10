@@ -1,5 +1,6 @@
 const mysql = require("mysql2/promise");
 const { assertDatabaseEnv } = require("../config/loadEnv");
+const { hashPassword, isBcryptHash } = require("../utils/passwords");
 
 assertDatabaseEnv();
 
@@ -38,17 +39,25 @@ async function run() {
     );
 
     if (rows.length > 0) {
+      const hashedPassword = isBcryptHash(adminPassword)
+        ? adminPassword
+        : await hashPassword(adminPassword);
+
       await connection.query(
         "UPDATE admins SET name = ?, password = ? WHERE email = ?",
-        [adminName, adminPassword, adminEmail]
+        [adminName, hashedPassword, adminEmail]
       );
       console.log(`Admin updated: ${adminEmail}`);
       return;
     }
 
+    const hashedPassword = isBcryptHash(adminPassword)
+      ? adminPassword
+      : await hashPassword(adminPassword);
+
     await connection.query(
       "INSERT INTO admins (name, email, password) VALUES (?, ?, ?)",
-      [adminName, adminEmail, adminPassword]
+      [adminName, adminEmail, hashedPassword]
     );
 
     console.log(`Admin created: ${adminEmail}`);

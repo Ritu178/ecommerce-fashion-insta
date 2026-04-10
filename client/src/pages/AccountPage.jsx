@@ -18,6 +18,37 @@ const getStoredUser = () => {
   }
 };
 
+const formatMoney = (value) => {
+  const amount = Number(value || 0);
+  return `Rs. ${amount.toFixed(2)}`;
+};
+
+const getProductImage = (item) => {
+  const rawImage = item?.image || item?.product_image || item?.thumbnail || "";
+
+  if (!rawImage) return "";
+  if (rawImage.startsWith("http")) return rawImage;
+  if (rawImage.startsWith("/")) return rawImage;
+
+  return `http://localhost:5000/uploads/${rawImage}`;
+};
+
+const getOrderItems = (order) => {
+  if (!Array.isArray(order?.products)) return [];
+  return order.products.map((item, index) => {
+    const unitPrice = Number(item.price ?? item.unit_price ?? 0);
+    const quantity = Number(item.quantity ?? 1);
+    return {
+      key: `${order.id}-${index}`,
+      title: item.title || item.name || `Item ${index + 1}`,
+      image: getProductImage(item),
+      unitPrice,
+      quantity,
+      lineTotal: unitPrice * quantity,
+    };
+  });
+};
+
 export default function AccountPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -172,28 +203,59 @@ export default function AccountPage() {
                 <div className="orders-list">
                   {orders.map((order) => (
                     <article key={order.id} className="order-item">
-                      <div className="order-item-main">
-                        <div className="order-item-head">
-                          <strong>Order #{order.id}</strong>
-                          <p>{order.status || "Pending"}</p>
+                      <div className="order-topbar">
+                        <div>
+                          <span className="order-kicker">Order #{order.id}</span>
+                          <h3>{order.status || "Pending"}</h3>
                         </div>
+                        <div className="order-total-box">
+                          <span>Total</span>
+                          <strong>{formatMoney(order.total ?? order.total_price ?? 0)}</strong>
+                        </div>
+                      </div>
 
+                      <div className="order-body">
                         <div className="order-products">
-                          {Array.isArray(order.products) && order.products.length > 0 ? (
-                            order.products.map((item, index) => (
-                              <div key={`${order.id}-${index}`} className="order-product-chip">
-                                <span>{item.title || item.name || `Item ${index + 1}`}</span>
-                                <strong>Qty {item.quantity || 1}</strong>
+                          {getOrderItems(order).length > 0 ? (
+                            getOrderItems(order).map((item) => (
+                              <div key={item.key} className="order-product-row">
+                                <div className="order-product-image">
+                                  {item.image ? (
+                                    <img src={item.image} alt={item.title} />
+                                  ) : (
+                                    <div className="order-product-placeholder">{item.title.charAt(0)}</div>
+                                  )}
+                                </div>
+
+                                <div className="order-product-meta">
+                                  <strong>{item.title}</strong>
+                                  <div className="order-product-pricing">
+                                    <span>Qty {item.quantity}</span>
+                                    <span>{formatMoney(item.unitPrice)} each</span>
+                                    <span>{formatMoney(item.lineTotal)} total</span>
+                                  </div>
+                                </div>
                               </div>
                             ))
                           ) : (
                             <p className="order-empty-items">No item details available</p>
                           )}
                         </div>
-                      </div>
-                      <div className="order-total-box">
-                        <span>Total</span>
-                        <strong>Rs. {Number(order.total ?? order.total_price ?? 0)}</strong>
+
+                        <div className="order-summary-mini">
+                          <div>
+                            <span>Items</span>
+                            <strong>{getOrderItems(order).length}</strong>
+                          </div>
+                          <div>
+                            <span>Status</span>
+                            <strong>{order.status || "Pending"}</strong>
+                          </div>
+                          <div>
+                            <span>Order Total</span>
+                            <strong>{formatMoney(order.total ?? order.total_price ?? 0)}</strong>
+                          </div>
+                        </div>
                       </div>
                     </article>
                   ))}

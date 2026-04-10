@@ -9,10 +9,12 @@ const fs = require("fs").promises;
 const multer = require("multer");
 const db = require("./db");
 const OpenAI = require("openai");
+const { hashPassword, verifyPassword } = require("./utils/passwords");
 
 const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const ordersRoutes = require("./routes/ordersRoutes");
+const razorpayRoutes = require("./routes/razorpayRoutes");
 const { getAllOrdersAdmin } = require("./controllers/ordersController");
 const verifyUserToken = require("./middleware/userAuth");
 const app = express();
@@ -40,13 +42,18 @@ app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
 
   db.query(
-    "SELECT * FROM users WHERE email=? AND password=?",
-    [email, password],
-    (err, result) => {
+    "SELECT * FROM users WHERE email=? LIMIT 1",
+    [email],
+    async (err, result) => {
       if (err) return res.status(500).send(err);
 
       if (result.length > 0) {
         const user = result[0];
+        const isValid = await verifyPassword(password, user.password);
+
+        if (!isValid) {
+          return res.status(400).json({ success: false, message: "Invalid credentials" });
+        }
 
         const token = jwt.sign({ id: user.id }, SECRET, {
           expiresIn: "1h",
@@ -93,7 +100,7 @@ app.put("/api/change-password", verifyUserToken, (req, res) => {
   db.query(
     "SELECT id, password FROM users WHERE id=?",
     [req.user.id],
-    (err, result) => {
+    async (err, result) => {
       if (err) return res.status(500).send(err);
 
       if (result.length === 0) {
@@ -102,16 +109,20 @@ app.put("/api/change-password", verifyUserToken, (req, res) => {
 
       const user = result[0];
 
-      if (user.password !== currentPassword) {
+      const isValid = await verifyPassword(currentPassword, user.password);
+
+      if (!isValid) {
         return res.status(400).json({
           success: false,
           message: "Current password is incorrect",
         });
       }
 
+      const hashedPassword = await hashPassword(newPassword);
+
       db.query(
         "UPDATE users SET password=? WHERE id=?",
-        [newPassword, req.user.id],
+        [hashedPassword, req.user.id],
         (updateErr) => {
           if (updateErr) return res.status(500).send(updateErr);
 
@@ -127,12 +138,19 @@ app.post("/admin/login", (req, res) => {
   const { email, password } = req.body;
 
   db.query(
-    "SELECT * FROM admins WHERE email=? AND password=?",
-    [email, password],
-    (err, result) => {
+    "SELECT * FROM admins WHERE email=? LIMIT 1",
+    [email],
+    async (err, result) => {
       if (err) return res.status(500).send(err);
 
       if (result.length > 0) {
+        const admin = result[0];
+        const isValid = await verifyPassword(password, admin.password);
+
+        if (!isValid) {
+          return res.json({ success: false });
+        }
+
         const token = jwt.sign({ email }, SECRET, {
           expiresIn: "1h",
         });
@@ -202,18 +220,25 @@ app.post("/api/signup", (req, res) => {
       }
 
       // insert new user
-      db.query(
-        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-        [name, email, password],
-        (err, result) => {
-          if (err) return res.status(500).json(err);
+      hashPassword(password)
+        .then((hashedPassword) => {
+          db.query(
+            "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+            [name, email, hashedPassword],
+            (err) => {
+              if (err) return res.status(500).json(err);
 
-          res.json({
-            success: true,
-            message: "Signup successful",
-          });
-        }
-      );
+              res.json({
+                success: true,
+                message: "Signup successful",
+              });
+            }
+          );
+        })
+        .catch((hashErr) => {
+          console.log(hashErr);
+          res.status(500).json({ success: false, message: "Signup failed" });
+        });
     }
   );
 });
@@ -470,6 +495,7 @@ app.post("/api/promo", (req, res) => {
 app.use("/api", userRoutes);
 app.use("/api", cartRoutes);
 app.use("/api/orders", ordersRoutes);
+app.use("/api/payments/razorpay", razorpayRoutes);
 app.get("/admin/orders", verifyToken, getAllOrdersAdmin);
 // New Orders Routes
 // const ordersRoutes = require("./routes/ordersRoutes");

@@ -1,41 +1,78 @@
-
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
+﻿import React, { useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./SearchResults.css";
 
 const Search = ({ products }) => {
-  const query = new URLSearchParams(useLocation().search).get("query");
+  const query = new URLSearchParams(useLocation().search).get("query") || "";
+  const navigate = useNavigate();
   const safeProducts = Array.isArray(products) ? products : [];
 
-  // 🔥 useMemo for optimization
   const filteredProducts = useMemo(() => {
-    if (!query) return [];
+    if (!query.trim()) return [];
 
-    return safeProducts.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
+    const normalizedQuery = query.toLowerCase();
+
+    return safeProducts.filter((item) => {
+      const haystack = [item?.name, item?.title, item?.brand, item?.category]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(normalizedQuery);
+    });
   }, [query, safeProducts]);
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h2>Search Results for "{query}"</h2>
+  const resolveImage = (item) => {
+    const image = item?.image || "";
+    if (!image) return "";
+    if (image.startsWith("http")) return image;
+    return `http://localhost:5000/uploads/${image}`;
+  };
 
-      {filteredProducts.length === 0 ? (
-        <h3 style={{ color: "red" }}>Product not found</h3>
-      ) : (
-        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-          {filteredProducts.map((item) => (
-            <div key={item._id} style={{
-              border: "1px solid #ddd",
-              padding: "10px",
-              borderRadius: "8px"
-            }}>
-              <img src={item.image} alt="" width="150" />
-              <h4>{item.name}</h4>
-              <p>₹{item.price}</p>
-            </div>
-          ))}
+  return (
+    <div className="search-page">
+      <div className="search-shell">
+        <div className="search-hero">
+          <span className="search-eyebrow">Search Results</span>
+          <h2>{query ? `Results for \"${query}\"` : "Search products"}</h2>
+          <p>
+            Browse products by title, brand, or category.
+          </p>
         </div>
-      )}
+
+        {!query.trim() ? (
+          <div className="search-empty-card">
+            <strong>Start typing in the search bar.</strong>
+            <p>Search by product title, brand, or category.</p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="search-empty-card">
+            <strong>No products found</strong>
+            <p>Try a different keyword or browse the catalog.</p>
+            <button type="button" onClick={() => navigate("/products")}>Browse Women</button>
+          </div>
+        ) : (
+          <div className="search-grid">
+            {filteredProducts.map((item) => (
+              <article key={item.id || item._id} className="search-card">
+                <div className="search-image-wrap">
+                  {resolveImage(item) ? (
+                    <img src={resolveImage(item)} alt={item.title || item.name || "Product"} />
+                  ) : (
+                    <div className="search-image-placeholder">{(item.title || item.name || "P")[0]}</div>
+                  )}
+                </div>
+
+                <div className="search-card-body">
+                  <span>{item.brand || "Brand"}</span>
+                  <h4>{item.title || item.name}</h4>
+                  <p>Rs. {Number(item.price || 0).toFixed(2)}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

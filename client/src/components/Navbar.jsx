@@ -129,7 +129,7 @@ const Navbar = () => {
 
     if (!search.trim()) return;
 
-    navigate(`/search?query=${encodeURIComponent(search)}`);
+    navigate(`/searchResults?query=${encodeURIComponent(search)}`);
   };
 
   const handleLogout = () => {
