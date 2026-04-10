@@ -181,7 +181,11 @@ const Signup = () => {
 
       {/* FORM */}
       <div className="signup-form">
-        <h2>Signup</h2>
+        <span className="signup-eyebrow">Create Account</span>
+        <h2>Join FASHIONISTA</h2>
+        <p className="signup-subtitle">
+          Create your account to save favorites, manage your cart, and check out faster.
+        </p>
 
         <input
           type="text"
@@ -201,7 +205,7 @@ const Signup = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleSignup}>Signup</button>
+        <button onClick={handleSignup}>Create Account</button>
 
         {/*  LOGIN LINK */}
         <p className="extra-text">

@@ -1,0 +1,77 @@
+.static-page {
+  min-height: calc(100vh - 160px);
+  padding: 48px 20px 0;
+  background: linear-gradient(180deg, #f8f2eb 0%, #ffffff 100%);
+}
+
+.static-page-hero,
+.static-page-content {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+}
+
+.static-page-hero {
+  padding: 36px 0 26px;
+}
+
+.static-page-eyebrow {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #9b6d49;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.static-page-hero h1 {
+  margin: 0;
+  color: #211612;
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.static-page-hero p {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: #654d3d;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.static-page-content {
+  padding: 12px 0 56px;
+  display: grid;
+  gap: 18px;
+}
+
+.static-page-section {
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(124, 88, 62, 0.1);
+  box-shadow: 0 14px 36px rgba(44, 29, 20, 0.06);
+}
+
+.static-page-section h2 {
+  margin: 0 0 12px;
+  color: #281b16;
+  font-size: 1.35rem;
+}
+
+.static-page-section p {
+  margin: 0;
+  color: #654d3d;
+  line-height: 1.8;
+}
+
+@media (max-width: 640px) {
+  .static-page {
+    padding-top: 28px;
+  }
+
+  .static-page-section {
+    padding: 22px;
+  }
+}

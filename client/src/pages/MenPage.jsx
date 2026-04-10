@@ -254,7 +254,6 @@ import "./ProductList.css";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import Footer from "../components/Footer";
 
 /* ================= PRODUCT CARD ================= */
 const ProductCard = ({
@@ -365,8 +364,11 @@ const MenPage = () => {
   useEffect(() => {
     fetch("http://localhost:5000/api/products/men")
       .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.log(err));
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.log(err);
+        setProducts([]);
+      });
   }, []);
 
   return (
@@ -377,7 +379,7 @@ const MenPage = () => {
 
       <div className="container my-5">
         <div className="product-grid">
-          {products.map((product) => (
+          {(Array.isArray(products) ? products : []).map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -391,7 +393,6 @@ const MenPage = () => {
           ))}
         </div>
       </div>
-        <Footer />
     </>
   );
 };

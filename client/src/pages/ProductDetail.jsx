@@ -4,7 +4,6 @@ import { CartContext } from "../context/CartContext";
 import "./ProductDetail.css";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { FaTrash } from "react-icons/fa";
-import Footer from "../components/Footer";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -204,8 +203,6 @@ const ProductDetail = () => {
           ))}
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };

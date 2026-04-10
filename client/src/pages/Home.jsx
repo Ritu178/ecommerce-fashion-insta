@@ -6,18 +6,18 @@ import HomeHero from "../components/HomeHero";
 import FashionSection from "../components/FashionSection";
 import MensSection from "../components/MensSection"; 
 import ChildrenSection from "../components/ChildrenSection";
+import HomeExtraSections from "../components/HomeExtraSections";
 
 import Chatbot from "../components/Chatbot";
-import Footer from "../components/Footer";
 function Home() {
   return (
     <>
       <HomeHero />
+      <HomeExtraSections />
       <FashionSection />
       <MensSection /> 
       <ChildrenSection />
-    <Chatbot />
-        <Footer />
+      <Chatbot />
     </>
   );
 }

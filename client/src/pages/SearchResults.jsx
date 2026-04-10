@@ -4,15 +4,16 @@ import { useLocation } from "react-router-dom";
 
 const Search = ({ products }) => {
   const query = new URLSearchParams(useLocation().search).get("query");
+  const safeProducts = Array.isArray(products) ? products : [];
 
   // 🔥 useMemo for optimization
   const filteredProducts = useMemo(() => {
     if (!query) return [];
 
-    return products.filter((item) =>
+    return safeProducts.filter((item) =>
       item.name.toLowerCase().includes(query.toLowerCase())
     );
-  }, [query, products]);
+  }, [query, safeProducts]);
 
   return (
     <div style={{ padding: "20px" }}>

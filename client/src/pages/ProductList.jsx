@@ -4,7 +4,6 @@ import "./ProductList.css";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import Footer from "../components/Footer";
 /* ================= PRODUCT CARD ================= */
 const ProductCard = ({
   product,
@@ -130,9 +129,12 @@ const ProductList = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log("WOMEN DATA ", data);
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setProducts([]);
+      });
   }, []);
 
   return (
@@ -145,7 +147,7 @@ const ProductList = () => {
 
         {/*  5 CARDS GRID */}
         <div className="product-grid">
-          {products.map((product) => (
+          {(Array.isArray(products) ? products : []).map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -158,9 +160,7 @@ const ProductList = () => {
             />
           ))}
         </div>
-
       </div>
-        <Footer />
     </>
   );
 };

@@ -61,9 +61,9 @@ const handleLogin = async () => {
   console.log("LOGIN RESPONSE:", res.data);
     console.log("FULL RESPONSE:", res.data);
     console.log("USER:", res.data.user);
-localStorage.setItem("token", res.data.token);
-// localStorage.setItem("userId", res.data.user._id);
-localStorage.setItem("user", JSON.stringify(res.data.user));
+ localStorage.setItem("token", res.data.token);
+ localStorage.setItem("user", JSON.stringify(res.data.user));
+ localStorage.setItem("userId", String(res.data.user._id));
 // localStorage.setItem("userId", res.data.user._id);
 // localStorage.setItem("userId", res.data.user._id);
   
@@ -104,22 +104,26 @@ localStorage.setItem("user", JSON.stringify(res.data.user));
 
       {/* LOGIN FORM */}
       <div className="login-form">
+        <span className="login-eyebrow">Member Access</span>
         <h2>Welcome Back</h2>
+        <p className="login-subtitle">
+          Sign in to continue shopping, manage your cart, and place orders faster.
+        </p>
 
         <input
           type="email"
-          placeholder="Enter Email"
+          placeholder="Email address"
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
-          placeholder="Enter Password"
+          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
         />
 
         <button className="login-btn" onClick={handleLogin}>
-          Login
+          Continue
         </button>
 
         <p className="extra-text">

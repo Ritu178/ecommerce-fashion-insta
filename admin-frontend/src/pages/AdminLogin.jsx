@@ -34,36 +34,51 @@ export default function AdminLogin() {
 
   return (
     <div className="login-container">
+      <div className="login-ambient login-ambient-one"></div>
+      <div className="login-ambient login-ambient-two"></div>
       <div className="login-box">
-
-        {/* LEFT IMAGE */}
         <div className="left">
+          <div className="left-overlay"></div>
           <img src={loginImg} alt="login" />
+          <div className="left-copy">
+            <span className="admin-badge">Admin Console</span>
+            <h1>Manage products, orders, and store activity from one place.</h1>
+            <p>
+              Sign in to access the FASHIONISTA admin workspace and monitor the
+              storefront with a cleaner operational view.
+            </p>
+          </div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="right">
-          <h2>Admin Login</h2>
+          <span className="panel-tag">Secure Access</span>
+          <h2>Welcome back, Admin</h2>
+          <p className="subtitle">
+            Use your admin credentials to continue to the dashboard.
+          </p>
 
           <input
             type="email"
-            placeholder="Enter Email"
+            placeholder="Admin email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
           <input
             type="password"
-            placeholder="Enter Password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
           <button className="login-btn" onClick={handleLogin}>
-            Login
+            Enter Dashboard
           </button>
-        </div>
 
+          <div className="login-note">
+            Protected area. Only authorized admins should continue.
+          </div>
+        </div>
       </div>
     </div>
   );

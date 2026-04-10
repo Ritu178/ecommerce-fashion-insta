@@ -73,10 +73,22 @@ if (audioRef.current) {
       {/* CHATBOX */}
       {open && (
         <div className="chatbot">
-
-          <div className="chat-header">Sky Garden Assistant</div>
+          <div className="chat-header">
+            <div>
+              <span className="chat-eyebrow">Live Style Help</span>
+              <strong>FASHIONISTA Assistant</strong>
+            </div>
+            <span className="chat-status">Online</span>
+          </div>
 
           <div className="chatbox">
+            {messages.length === 0 && (
+              <div className="chat-welcome">
+                <h4>Ask about products, prices, or order help.</h4>
+                <p>Try: "show dresses", "kids collection", or "track order"</p>
+              </div>
+            )}
+
             {messages.map((msg, i) => (
               <div key={i}>
                 {/* TEXT */}
@@ -107,7 +119,7 @@ if (audioRef.current) {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask something..."
+              placeholder="Ask about collections, prices, or orders..."
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
             <button onClick={sendMessage}>Send</button>

@@ -219,7 +219,14 @@
 
 // export default CartPage;
 import React, { useContext, useState } from "react";
-import { FaTrash, FaArrowRight, FaHeart } from "react-icons/fa";
+import {
+  FaTrash,
+  FaArrowRight,
+  FaHeart,
+  FaShoppingBag,
+  FaTruck,
+  FaTag,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import "./CartPage.css";
@@ -233,8 +240,6 @@ const CartPage = () => {
   const [deliveryFee, setDeliveryFee] = useState(15);
   const [wishlist, setWishlist] = useState([]);
 
-  //  USER GET (IMPORTANT)
-  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   //  IMPORTANT: backend se aane wale data ko use karo
   const mergedCart = cart.map((item) => ({
@@ -251,6 +256,7 @@ const CartPage = () => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const isEmpty = mergedCart.length === 0;
 
   //  PROMO API CALL
   const applyPromo = async () => {
@@ -284,50 +290,6 @@ const CartPage = () => {
 
   const finalTotal = totalPrice - discount + deliveryFee;
 
-  const placeOrder = async () => {
-    if (!user) {
-      alert("Please login first ");
-      return;
-    }
-
-    if (mergedCart.length === 0) {
-      alert("Cart is empty ");
-      return;
-    }
-
-    try {
-      const orderData = {
-        user_id: user._id,
-        products: mergedCart,
-        total_price: finalTotal,
-        address: "Punjab, India",
-      };
-
-      const res = await fetch("http://localhost:5000/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        alert(" Order placed successfully!");
-
-        //  optional: cart clear (agar tumne function banaya ho)
-        // clearCart();
-
-      } else {
-        alert("Something went wrong ");
-      }
-    } catch (err) {
-      console.log(err);
-      alert("Server error ");
-    }
-  };
-
   const toggleWishlist = (id) => {
     setWishlist((prev) =>
       prev.includes(id)
@@ -338,18 +300,58 @@ const CartPage = () => {
 
   return (
     <div className="cart-page">
-
-      {mergedCart.length === 0 && (
-        <div className="empty-cart">
-          Your cart is empty
-        </div>
-      )}
-
-      {/* LEFT */}
       <div className="cart-left">
-        <h2>Shopping Cart</h2>
+        {isEmpty ? (
+          <div className="empty-cart-panel">
+            <div className="empty-cart-badge">Your wardrobe is waiting</div>
+            <div className="empty-cart-icon">
+              <FaShoppingBag />
+            </div>
+            <h2>Shopping Cart</h2>
+            <p className="empty-cart-title">Your cart is empty</p>
+            <p className="empty-cart-copy">
+              Add a few standout pieces and we will keep everything ready for a
+              smoother checkout.
+            </p>
 
-        {mergedCart.map((item) => (
+            <div className="empty-cart-highlights">
+              <div className="empty-highlight-card">
+                <FaTruck />
+                <div>
+                  <strong>Fast dispatch</strong>
+                  <span>Delivery fee updates once items are added.</span>
+                </div>
+              </div>
+
+              <div className="empty-highlight-card">
+                <FaTag />
+                <div>
+                  <strong>Promo ready</strong>
+                  <span>Apply savings after you build your bag.</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="empty-cart-actions">
+              <button
+                className="empty-cart-primary"
+                onClick={() => navigate("/products")}
+              >
+                Explore Products <FaArrowRight />
+              </button>
+              <button
+                className="empty-cart-secondary"
+                onClick={() => navigate("/")}
+              >
+                Continue Browsing
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h2>Shopping Cart</h2>
+
+            {mergedCart.map((item) => (
           <div className="cart-item fade-in" key={item.product_id}>
 
             <div className="image-box">
@@ -394,40 +396,42 @@ const CartPage = () => {
               </div>
             </div>
 
-            <div className="item-price">₹{item.price}</div>
+            <div className="item-price">Rs. {item.price}</div>
           </div>
-        ))}
+            ))}
+          </>
+        )}
       </div>
 
       {/* RIGHT */}
-      <div className="cart-right">
+      <div className={`cart-right ${isEmpty ? "cart-right-empty" : ""}`}>
         <h3>Order Summary</h3>
 
         <div className="summary-row">
           <span>Subtotal</span>
-          <span>₹{totalPrice}</span>
+          <span>Rs. {totalPrice}</span>
         </div>
 
         <div className="summary-row discount">
           <span>Discount</span>
-          <span>-₹{discount}</span>
+          <span>-Rs. {discount}</span>
         </div>
 
         <div className="summary-row">
           <span>Delivery Fee</span>
-          <span>₹{deliveryFee}</span>
+          <span>{isEmpty ? "Calculated at checkout" : `Rs. ${deliveryFee}`}</span>
         </div>
 
         <hr />
 
         <div className="summary-row total">
           <span>Total</span>
-          <span>₹{finalTotal}</span>
+          <span>{isEmpty ? "Rs. 0" : `Rs. ${finalTotal}`}</span>
         </div>
 
-        {discount > 0 && (
+        {discount > 0 && !isEmpty && (
           <p className="saved-text">
-            You saved ₹{discount}
+            You saved Rs. {discount}
           </p>
         )}
 
@@ -437,13 +441,20 @@ const CartPage = () => {
             placeholder="Add promo code"
             value={promo}
             onChange={(e) => setPromo(e.target.value)}
+            disabled={isEmpty}
           />
-          <button className="apply-btn" onClick={applyPromo}>
+          <button className="apply-btn" onClick={applyPromo} disabled={isEmpty}>
             Apply
           </button>
         </div>
 
-        {discount > 0 && (
+        {isEmpty && (
+          <p className="empty-summary-note">
+            Add products to unlock delivery options, promo codes, and checkout.
+          </p>
+        )}
+
+        {discount > 0 && !isEmpty && (
           <p className="promo-success">
             Promo Applied
           </p>
@@ -452,8 +463,9 @@ const CartPage = () => {
         <button
           className="checkout-btn"
           onClick={() => navigate("/place-order")}
+          disabled={isEmpty}
         >
-          Place Order <FaArrowRight />
+          {isEmpty ? "Add items to continue" : "Place Order"} <FaArrowRight />
         </button>
       </div>
     </div>

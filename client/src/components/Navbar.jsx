@@ -84,112 +84,143 @@
 
 
 
-import React, { useState, useContext } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import "./Navbar.css";
-import { FaSearch, FaUser, FaShoppingCart } from "react-icons/fa";
+import { FaChevronDown, FaSearch, FaUser, FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState("");
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
 
   const { cart } = useContext(CartContext);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-const handleSearch = () => {
-  console.log("SEARCH VALUE:", search); 
 
-  if (!search.trim()) return;
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
 
-navigate(`/search?query=${encodeURIComponent(search)}`);
-};
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+  const handleSearch = () => {
+    console.log("SEARCH VALUE:", search);
+
+    if (!search.trim()) return;
+
+    navigate(`/search?query=${encodeURIComponent(search)}`);
+  };
+
   return (
-    <div className="navbar">
-
-      {/* LEFT - LOGO */}
-      <h2 className="logo" onClick={() => navigate("/")}>
-        SkyGarden
-      </h2>
-
-      {/* CENTER - MENU */}
-      <ul className="nav-links">
-        <li onClick={() => navigate("/")}>Home</li>
-
-<li className={`dropdown ${showDropdown ? "active" : ""}`}>
-  
-  <span onClick={(e) => {
-    e.stopPropagation(); 
-    setShowDropdown(!showDropdown);
-  }}>
-    Category
-  </span>
-
-  {showDropdown && (
-    <ul className="dropdown-menu">
-      <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/men");
-        setShowDropdown(false);
-      }}>Men</li>
-
-      <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/products");
-        setShowDropdown(false);
-      }}>Women</li>
-
-      <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/kids");
-        setShowDropdown(false);
-      }}>Children</li>
-    </ul>
-  )}
-</li>
-
-         <li onClick={() => navigate("/about")}>About</li>
-        <li onClick={() => navigate("/contact")}>Contact</li>
-      </ul>
-
-
-      <div className="nav-center">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
-          }}
-        />
-
-        <button className="search-btn" onClick={handleSearch}>
-          <FaSearch />
+    <header className="navbar-shell">
+      <div className="navbar-accent"></div>
+      <div className="navbar">
+        <button className="logo-block" onClick={() => navigate("/")}>
+          <span className="logo-tag">premium edit</span>
+          <span className="logo">FASHIONISTA</span>
         </button>
+
+        <nav className="nav-links">
+          <button className="nav-link" onClick={() => navigate("/")}>
+            Home
+          </button>
+
+          <div
+            ref={dropdownRef}
+            className={`dropdown ${showDropdown ? "active" : ""}`}
+          >
+            <button
+              className="nav-link nav-link-dropdown"
+              onClick={() => setShowDropdown((prev) => !prev)}
+            >
+              Category <FaChevronDown className="dropdown-icon" />
+            </button>
+
+            {showDropdown && (
+              <ul className="dropdown-menu">
+                <li
+                  onClick={() => {
+                    navigate("/men");
+                    setShowDropdown(false);
+                  }}
+                >
+                  Men
+                </li>
+                <li
+                  onClick={() => {
+                    navigate("/products");
+                    setShowDropdown(false);
+                  }}
+                >
+                  Women
+                </li>
+                <li
+                  onClick={() => {
+                    navigate("/kids");
+                    setShowDropdown(false);
+                  }}
+                >
+                  Children
+                </li>
+              </ul>
+            )}
+          </div>
+
+          <button className="nav-link" onClick={() => navigate("/about")}>
+            About
+          </button>
+          <button className="nav-link" onClick={() => navigate("/contact")}>
+            Contact
+          </button>
+        </nav>
+
+        <div className="nav-center">
+          <input
+            type="text"
+            placeholder="Search jackets, dresses, kids wear..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
+          />
+
+          <button className="search-btn" onClick={handleSearch}>
+            <FaSearch />
+          </button>
+        </div>
+
+        <div className="nav-right">
+          {!isLoggedIn ? (
+            <>
+              <button className="nav-item" onClick={() => navigate("/login")}>
+                <FaUser />
+                <span>Login</span>
+              </button>
+
+              <button className="nav-item nav-item-outline" onClick={() => navigate("/signup")}>
+                <FaUser />
+                <span>Signup</span>
+              </button>
+            </>
+          ) : (
+            <button className="nav-item cart" onClick={() => navigate("/cart")}>
+              <FaShoppingCart />
+              <span>Cart</span>
+              <span className="cart-count">{totalItems}</span>
+            </button>
+          )}
+        </div>
       </div>
-
-      {/* RIGHT SIDE */}
-      <div className="nav-right">
-
-        <div className="nav-item" onClick={() => navigate("/login")}>
-          <FaUser />
-          <span>Login</span>
-        </div>
-
-        <div className="nav-item" onClick={() => navigate("/signup")}>
-          <FaUser />
-          <span>Signup</span>
-        </div>
-
-        <div className="nav-item cart" onClick={() => navigate("/cart")}>
-          <FaShoppingCart />
-          <span>Cart ({totalItems})</span>
-        </div>
-
-      </div>
-
-    </div>
+    </header>
   );
 };
 

@@ -4,7 +4,6 @@ import "./kids.css";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import Footer from "../components/Footer";
 
 const ProductCard = ({
   product,
@@ -111,8 +110,11 @@ const KidsProducts = () => {
   useEffect(() => {
     fetch("http://localhost:5000/api/products/children")
       .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.log(err));
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.log(err);
+        setProducts([]);
+      });
   }, []);
 
   return (
@@ -124,7 +126,7 @@ const KidsProducts = () => {
       <div className="container my-5">
         <div className="product-grid">
 
-          {products.map((product) => (
+          {(Array.isArray(products) ? products : []).map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -139,7 +141,6 @@ const KidsProducts = () => {
 
         </div>
       </div>
-         <Footer />
     </>
   );
 };
